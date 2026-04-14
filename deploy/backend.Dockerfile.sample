@@ -1,0 +1,12 @@
+ARG NODE_BASE_IMAGE=node:22-alpine
+FROM ${NODE_BASE_IMAGE} AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+
+FROM ${NODE_BASE_IMAGE} AS runtime
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+EXPOSE 3001
+CMD ["npm", "run", "start"]
